@@ -1,3 +1,9 @@
+<?php require_once __DIR__ . '/lib/bootstrap.php'; ?>
+<?php
+$headerProducts=products(true);
+$headerCategories=machine_categories();
+foreach($headerProducts as $headerProduct){$headerCategory=trim((string)($headerProduct['category']??''));if($headerCategory!==''&&!in_array($headerCategory,$headerCategories,true))$headerCategories[]=$headerCategory;}
+?>
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -5,8 +11,9 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="template-version" content="1.0.8">
-    <title>Rotogravure Printing Machine</title>
-    <meta name="description" content="">
+    <title><?= h($pageTitle ?? 'Rotogravure Printing Machine') ?></title>
+    <meta name="description" content="<?= h($metaDescription ?? 'Mohindra Mechanical Works industrial printing and converting machines.') ?>">
+    <?php if (!empty($metaKeywords)): ?><meta name="keywords" content="<?= h($metaKeywords) ?>"><?php endif; ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico in the root directory -->
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
@@ -68,39 +75,11 @@
                                 </li>
 
                                 <li class="menu-item-has-children">
-                                    <a href="index.php#machines">Our Machines</a>
+                                    <a href="products.php">Our Machines</a>
 
                                     <ul class="submenu last-children">
-                                        <li>
-                                            <a href="#">Rotogravure Printing Machine</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">MLS Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shafted Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shafted MLS Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">MLS Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">ELS Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Pharmaceutical Foil Rotogravure Printing Machine</a>
-                                        </li>
+                                        <li><a href="products.php">View all machines</a></li>
+                                        <?php foreach($headerCategories as $navCategory): ?><li><a href="<?=h(slugify($navCategory))?>.php"><?=h($navCategory)?></a></li><?php endforeach; ?>
                                     </ul>
                                 </li>
 
@@ -210,39 +189,10 @@
                                 </li>
 
                                 <li class="menu-item-has-children">
-                                    <a href="index.php#machines">Our Machines</a>
+                                    <a href="products.php">Our Machines</a>
                                     <ul class="submenu last-children">
-                                        <li>
-                                            <a href="#">Rotogravure Printing Machine</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">MLS Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shafted Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shafted MLS Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">MLS Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">ELS Shaftless Rotogravure Printing Machine</a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">Pharmaceutical Foil Rotogravure Printing Machine</a>
-                                        </li>
-
+                                        <li><a href="products.php">View all machines</a></li>
+                                        <?php foreach($headerCategories as $navCategory): ?><li><a href="<?=h(slugify($navCategory))?>.php"><?=h($navCategory)?></a></li><?php endforeach; ?>
                                     </ul>
                                 </li>
 
