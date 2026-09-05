@@ -1,2 +1,109 @@
-import React,{useState}from'react';import{Eye,EyeOff,LockKeyhole,Mail,ArrowRight,ShieldCheck,Globe2,BarChart3,Layers3}from'lucide-react';
-export default function Login({onLogin}){const[show,setShow]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState('');function submit(e){e.preventDefault();const data=new FormData(e.currentTarget);if(!data.get('email')||!data.get('password')){setError('Please enter your email and password.');return}setError('');setLoading(true);setTimeout(()=>onLogin(),650)}return <main className="login-page"><div className="login-orb one"/><div className="login-orb two"/><section className="login-shell"><div className="login-form-side"><img className="login-logo" src="/mmw-logo.png" alt="Mohindra Mechanical Works"/><div className="login-copy"><span className="login-kicker"><ShieldCheck/> Secure admin portal</span><h1>Welcome back</h1><p>Sign in to manage your websites, products, pages and SEO.</p></div><form onSubmit={submit}><label className="login-field"><span>Email address</span><div><Mail/><input name="email" type="email" placeholder="admin@mohindra.com" autoComplete="email"/></div></label><label className="login-field"><span>Password</span><div><LockKeyhole/><input name="password" type={show?'text':'password'} placeholder="Enter your password" autoComplete="current-password"/><button type="button" onClick={()=>setShow(!show)} aria-label="Toggle password">{show?<EyeOff/>:<Eye/>}</button></div></label><div className="login-options"><label><input type="checkbox"/> Remember me</label><button type="button">Forgot password?</button></div>{error&&<p className="login-error">{error}</p>}<button className="login-submit" disabled={loading}>{loading?'Signing in...':<>Sign in to dashboard <ArrowRight/></>}</button></form><p className="login-support">Having trouble? <button>Contact support</button></p><small className="login-copyright">© 2026 Mohindra Mechanical Works. All rights reserved.</small></div><aside className="login-visual"><div className="visual-grid"/><div className="visual-content"><span>MMW CENTRAL</span><h2>One powerful dashboard.<br/>Every website in control.</h2><p>Manage multi-domain content from a secure, centralized workspace.</p><div className="login-features"><div><Globe2/><b>Multiple websites</b><small>Switch and manage instantly</small></div><div><Layers3/><b>Dynamic products</b><small>Publish without code changes</small></div><div><BarChart3/><b>SEO monitoring</b><small>Stay ready for indexing</small></div></div></div><div className="visual-machine"><span/><span/><span/><span/><span/></div><blockquote>“Built to keep your entire digital catalogue organized.”</blockquote></aside></section></main>}
+﻿import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+
+export default function Login({ onLogin }) {
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit(e) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    if (!data.get("email") || !data.get("password")) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: data.get("password"),
+        }),
+      });
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : null;
+      } catch {
+        throw new Error(
+          `Server returned an invalid response (${response.status})`
+        );
+      }
+      if (!result)
+        throw new Error("Cannot reach the login service. Please start the backend.");
+      if (!response.ok || !result.success)
+        throw new Error(result.message || "Login failed");
+      const storage = data.get("remember") ? localStorage : sessionStorage;
+      storage.setItem("mmw-auth-token", result.data.token);
+      storage.setItem("mmw-auth-user", JSON.stringify(result.data.user));
+      onLogin(result.data.user);
+    } catch (problem) {
+      setError(
+        problem.message === "Failed to fetch"
+          ? "Cannot reach server. Run 'npm run server' to start the backend."
+          : problem.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="login-page-new">
+      {Array.from({ length: 270 }, (_, i) => (
+        <span key={i} />
+      ))}
+      <div className="signin">
+        <div className="signin-content">
+          <div className="logo-circle">
+            <img src="/mmw-logo.png" alt="Admin" />
+          </div>
+          <h2>Dashboard Login</h2>
+          <form className="form" onSubmit={submit}>
+            <div className="inputBx">
+              <input
+                type="email"
+                name="email"
+                required
+                autoComplete="email"
+              />
+              <i>Email</i>
+            </div>
+            <div className="inputBx">
+              <input
+                type={show ? "text" : "password"}
+                name="password"
+                required
+                autoComplete="current-password"
+              />
+              <i>Password</i>
+              <button
+                type="button"
+                className="toggle-pass"
+                onClick={() => setShow(!show)}
+                aria-label="Toggle password"
+              >
+                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            {error && <p className="login-error-new">{error}</p>}
+            <div className="links">
+              <a href="#">Forgot Password</a>
+            </div>
+            <div className="inputBx">
+              <input
+                type="submit"
+                value={loading ? "Signing in..." : "Login"}
+                disabled={loading}
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}

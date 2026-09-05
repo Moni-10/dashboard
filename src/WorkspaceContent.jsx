@@ -1,0 +1,48 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { Edit3, FilePlus2, ImagePlus, Plus, Save, Search, Trash2, X } from "lucide-react";
+import { api } from "./api.js";
+
+const configs = {
+  Pages: { type: "page", singular: "Page", statuses: ["draft", "published"] },
+  "Feature Pages": { type: "feature", singular: "Feature Page", statuses: ["draft", "published"] },
+  Blogs: { type: "blog", singular: "Blog Post", statuses: ["draft", "published", "scheduled"] },
+  Inquiries: { type: "inquiry", singular: "Inquiry", statuses: ["new", "read", "contacted", "converted", "closed"] },
+  "Media Library": { type: "media", singular: "Media File", statuses: ["active"] },
+  "Image Library": { type: "media", singular: "Image", statuses: ["active"] },
+};
+const slugify = (v = "") => v.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export default function WorkspaceContent({ mode, website, notify = () => {} }) {
+  const config = configs[mode], websiteId = website?._id || website?.id;
+  const blank = { title: "", slug: "", excerpt: "", content: "", status: config.statuses[0], featured: false, publishAt: "", seoTitle: "", seoDescription: "", sections: [{ heading: "", body: "", image: "", order: 0 }], contact: { name: "", email: "", phone: "", company: "", product: "", message: "" }, file: null };
+  const [items, setItems] = useState([]), [query, setQuery] = useState(""), [editing, setEditing] = useState(null), [form, setForm] = useState(blank), [open, setOpen] = useState(false), [loading, setLoading] = useState(true);
+  const headers = { "x-website-id": websiteId };
+  const load = () => { if (!/^[a-f\d]{24}$/i.test(websiteId || "")) return; setLoading(true); api(`/api/content?type=${config.type}`, { headers }).then(({ data }) => setItems(data)).catch((e) => notify(`Could not load ${mode}`, e.message)).finally(() => setLoading(false)); };
+  useEffect(load, [websiteId, mode]);
+  const shown = useMemo(() => items.filter((x) => `${x.title} ${x.excerpt || ""}`.toLowerCase().includes(query.toLowerCase())), [items, query]);
+  const change = (key, value) => setForm((x) => ({ ...x, [key]: value }));
+  const begin = (item = null) => { setEditing(item); setForm(item ? { ...blank, ...item, seoTitle: item.seo?.title || "", seoDescription: item.seo?.description || "" } : blank); setOpen(true); };
+  const readFile = (file) => { if (!file) return; if (file.size > 8 * 1024 * 1024) return notify("File too large", "Maximum upload size is 8 MB."); const reader = new FileReader(); reader.onload = () => change("file", { name: file.name, url: String(reader.result), mimeType: file.type, size: file.size }); reader.readAsDataURL(file); };
+  async function save() {
+    const title = config.type === "inquiry" ? (form.contact.name || form.title) : (form.title || form.file?.name);
+    if (!title) return notify("Required information missing", config.type === "media" ? "Choose a file." : "Enter a title or name.");
+    const slug = ["page", "feature", "blog"].includes(config.type) ? (form.slug || slugify(title)) : undefined;
+    const payload = { ...form, title, slug, type: config.type, seo: { title: form.seoTitle || title, description: form.seoDescription || form.excerpt, canonical: slug ? `https://${website.domain}/${config.type === "blog" ? "blog" : "pages"}/${slug}` : undefined, index: form.status === "published", follow: true } };
+    delete payload.seoTitle; delete payload.seoDescription; delete payload._id;
+    try { await api(`/api/content${editing ? `/${editing._id}` : ""}`, { method: editing ? "PUT" : "POST", headers, body: JSON.stringify(payload) }); notify(`${config.singular} saved`, title); setOpen(false); setEditing(null); setForm(blank); load(); } catch (e) { notify(`Could not save ${config.singular}`, e.message); }
+  }
+  async function remove(item) { if (!confirm(`Delete ${item.title}?`)) return; try { await api(`/api/content/${item._id}`, { method: "DELETE", headers }); notify("Deleted", item.title); load(); } catch (e) { notify("Could not delete", e.message); } }
+  const section = form.sections?.[0] || {};
+  return <div className="website-page animate-in">
+    <div className="form-page-head"><div><p className="eyebrow">{website.name}</p><h1>{mode}</h1><p>{config.type === "media" ? "Upload, preview, rename, replace or delete website images from one place." : config.type === "feature" ? "Build SEO-ready feature and landing pages with structured sections." : `Manage website-specific ${mode.toLowerCase()} from the database.`}</p></div><button className="btn primary" onClick={() => begin()}><Plus /> Add {config.singular}</button></div>
+    {config.type === "blog" && <div className="tenant-banner"><FilePlus2 /><div><b>Blog publishing workflow</b><span>Add title, slug, summary, full content and featured image → complete SEO fields → select Published → save → open Website Preview → Blogs.</span></div></div>}
+    <section className="panel"><div className="table-tools"><label><Search /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Search ${mode.toLowerCase()}...`} /></label></div>
+      {loading ? <p className="empty-state">Loading...</p> : <div className="category-records">{shown.map((item) => <article key={item._id}><span className="main">{config.type === "media" ? <ImagePlus /> : <FilePlus2 />}</span><div><b>{item.title}</b><small>{item.status} · {new Date(item.updatedAt).toLocaleDateString()}</small></div><button onClick={() => begin(item)}><Edit3 /></button><button className="danger" onClick={() => remove(item)}><Trash2 /></button></article>)}{!shown.length && <p className="empty-state">No {mode.toLowerCase()} yet. Use the button above to create the first record.</p>}</div>}
+    </section>
+    {open && <div className="modal-backdrop open"><div className="modal modal-pop website-modal"><button className="modal-close" onClick={() => setOpen(false)}><X /></button><h3>{editing ? "Edit" : "Add"} {config.singular}</h3>
+      {config.type === "inquiry" ? <><label className="form-field"><span>Name *</span><input value={form.contact.name} onChange={(e) => change("contact", { ...form.contact, name: e.target.value })} /></label><label className="form-field"><span>Email</span><input type="email" value={form.contact.email} onChange={(e) => change("contact", { ...form.contact, email: e.target.value })} /></label><label className="form-field"><span>Phone / Company</span><input value={form.contact.phone} onChange={(e) => change("contact", { ...form.contact, phone: e.target.value })} /></label><label className="form-field"><span>Message</span><textarea rows="4" value={form.contact.message} onChange={(e) => change("contact", { ...form.contact, message: e.target.value })} /></label></> : config.type === "media" ? <label className="form-field"><span>Upload image, PDF or document *</span><input type="file" accept="image/*,.pdf,.doc,.docx" onChange={(e) => readFile(e.target.files?.[0])} />{form.file && <small>{form.file.name} · {Math.ceil(form.file.size / 1024)} KB</small>}</label> : <><label className="form-field"><span>Title *</span><input value={form.title} onChange={(e) => { change("title", e.target.value); if (!editing) change("slug", slugify(e.target.value)); }} /></label><label className="form-field"><span>Slug</span><input value={form.slug} onChange={(e) => change("slug", slugify(e.target.value))} /></label><label className="form-field"><span>Summary</span><textarea rows="3" value={form.excerpt} onChange={(e) => change("excerpt", e.target.value)} /></label><label className="form-field"><span>Content</span><textarea rows="6" value={form.content} onChange={(e) => change("content", e.target.value)} /></label>{config.type === "blog" && <label className="form-field"><span>Featured image</span><input type="file" accept="image/*" onChange={(e) => readFile(e.target.files?.[0])} />{form.file && <small>{form.file.name}</small>}</label>}{config.type === "feature" && <><label className="form-field"><span>Feature section heading</span><input value={section.heading || ""} onChange={(e) => change("sections", [{ ...section, heading: e.target.value, order: 0 }])} /></label><label className="form-field"><span>Feature section content</span><textarea rows="4" value={section.body || ""} onChange={(e) => change("sections", [{ ...section, body: e.target.value, order: 0 }])} /></label></>}<label className="form-field"><span>SEO title</span><input value={form.seoTitle} maxLength="60" onChange={(e) => change("seoTitle", e.target.value)} /></label><label className="form-field"><span>Meta description</span><textarea rows="3" maxLength="160" value={form.seoDescription} onChange={(e) => change("seoDescription", e.target.value)} /></label></>}
+      {config.type === "blog" && <div className="form-grid two"><label className="form-field"><span>Publish date</span><input type="datetime-local" value={form.publishAt ? String(form.publishAt).slice(0,16) : ""} onChange={(e) => change("publishAt", e.target.value)} /></label><label className="form-field"><span>Featured post</span><select value={form.featured ? "yes" : "no"} onChange={(e) => change("featured", e.target.value === "yes")}><option value="no">No</option><option value="yes">Yes</option></select></label></div>}
+      <label className="form-field"><span>Status</span><select value={form.status} onChange={(e) => change("status", e.target.value)}>{config.statuses.map((s) => <option key={s}>{s}</option>)}</select></label><div className="modal-actions"><button className="btn secondary" onClick={() => setOpen(false)}>Cancel</button><button className="btn primary" onClick={save}><Save /> Save</button></div>
+    </div></div>}
+  </div>;
+}

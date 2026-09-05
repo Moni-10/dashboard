@@ -1,19 +1,171 @@
-const icons={grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',box:'<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 7 8 4 8-4v10l-8 4-8-4V7Zm8 4v10"/>',layers:'<path d="m12 3-9 5 9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',file:'<path d="M6 2h8l4 4v16H6V2Z"/><path d="M14 2v5h5M9 12h6M9 16h6"/>',trend:'<path d="M3 17 9 11l4 4 8-9"/><path d="M15 6h6v6"/>',image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m3 17 5-5 4 4 3-3 6 6"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.09A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.09 14H3v-4h.09A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.09V3h4v.09A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.91 10H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',external:'<path d="M14 3h7v7M10 14 21 3"/><path d="M18 13v7H4V6h7"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',chevron:'<path d="m7 10 5 5 5-5"/>',upload:'<path d="M12 16V3m0 0L7 8m5-5 5 5M5 14H3v7h18v-7h-2"/>',arrow:'<path d="M5 12h14m-5-5 5 5-5 5"/>',alert:'<path d="M12 9v4m0 4h.01M10.3 3.7 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/>',check:'<path d="m5 12 4 4L19 6"/>'};
-document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[el.dataset.icon]||''}</svg>`});
-const products=[
- {name:'Servo Rotogravure Printing Machine',slug:'servo-rotogravure-printing-machine',cat:'Rotogravure Machines',seo:98,status:'published',updated:'12 min ago'},
- {name:'Gear Driven Rotogravure Machine',slug:'gear-driven-rotogravure-machine',cat:'Rotogravure Machines',seo:94,status:'published',updated:'2 hrs ago'},
- {name:'8 Colour Rotogravure Printing Machine',slug:'8-colour-rotogravure-machine',cat:'Multi Colour',seo:88,status:'published',updated:'Yesterday'},
- {name:'MLS Plastic Film Printing Machine',slug:'mls-plastic-film-machine',cat:'MLS Machines',seo:72,status:'draft',updated:'2 days ago'},
- {name:'Pharmaceutical Foil Printing Machine',slug:'pharma-foil-printing-machine',cat:'Foil Machines',seo:91,status:'published',updated:'3 days ago'}
+const icons = {
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  globe:
+    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
+  box: '<path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 7 8 4 8-4v10l-8 4-8-4V7Zm8 4v10"/>',
+  layers:
+    '<path d="m12 3-9 5 9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
+  file: '<path d="M6 2h8l4 4v16H6V2Z"/><path d="M14 2v5h5M9 12h6M9 16h6"/>',
+  trend: '<path d="M3 17 9 11l4 4 8-9"/><path d="M15 6h6v6"/>',
+  image:
+    '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m3 17 5-5 4 4 3-3 6 6"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  users:
+    '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  settings:
+    '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.09A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15 1.7 1.7 0 0 0 3.09 14H3v-4h.09A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63 1.7 1.7 0 0 0 10 3.09V3h4v.09A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9 1.7 1.7 0 0 0 20.91 10H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  external: '<path d="M14 3h7v7M10 14 21 3"/><path d="M18 13v7H4V6h7"/>',
+  bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
+  chevron: '<path d="m7 10 5 5 5-5"/>',
+  upload: '<path d="M12 16V3m0 0L7 8m5-5 5 5M5 14H3v7h18v-7h-2"/>',
+  arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+  alert:
+    '<path d="M12 9v4m0 4h.01M10.3 3.7 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+};
+document.querySelectorAll("[data-icon]").forEach((el) => {
+  el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[el.dataset.icon] || ""}</svg>`;
+});
+const products = [
+  {
+    name: "Servo Rotogravure Printing Machine",
+    slug: "servo-rotogravure-printing-machine",
+    cat: "Rotogravure Machines",
+    seo: 98,
+    status: "published",
+    updated: "12 min ago",
+  },
+  {
+    name: "Gear Driven Rotogravure Machine",
+    slug: "gear-driven-rotogravure-machine",
+    cat: "Rotogravure Machines",
+    seo: 94,
+    status: "published",
+    updated: "2 hrs ago",
+  },
+  {
+    name: "8 Colour Rotogravure Printing Machine",
+    slug: "8-colour-rotogravure-machine",
+    cat: "Multi Colour",
+    seo: 88,
+    status: "published",
+    updated: "Yesterday",
+  },
+  {
+    name: "MLS Plastic Film Printing Machine",
+    slug: "mls-plastic-film-machine",
+    cat: "MLS Machines",
+    seo: 72,
+    status: "draft",
+    updated: "2 days ago",
+  },
+  {
+    name: "Pharmaceutical Foil Printing Machine",
+    slug: "pharma-foil-printing-machine",
+    cat: "Foil Machines",
+    seo: 91,
+    status: "published",
+    updated: "3 days ago",
+  },
 ];
-const tbody=document.getElementById('productRows');let filter='all';
-function renderProducts(){const query=document.getElementById('productSearch').value.toLowerCase();const shown=products.filter(p=>(filter==='all'||p.status===filter)&&p.name.toLowerCase().includes(query));tbody.innerHTML=shown.map(p=>`<tr><td><div class="product-cell"><span class="product-thumb"><i class="machine"></i></span><p><b>${p.name}</b><small>/${p.slug}</small></p></div></td><td><span class="category-tag">${p.cat}</span></td><td><span class="seo-score ${p.seo<80?'mid':''}"><i></i>${p.seo}</span></td><td><span class="status ${p.status}">${p.status[0].toUpperCase()+p.status.slice(1)}</span></td><td>${p.updated}</td><td><button class="row-more">•••</button></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;height:110px">No products found</td></tr>'}
-renderProducts();document.getElementById('productSearch').addEventListener('input',renderProducts);document.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.chip.active').classList.remove('active');btn.classList.add('active');filter=btn.dataset.filter;renderProducts()}));
-const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('mobileOverlay');document.getElementById('menuBtn').onclick=()=>{sidebar.classList.toggle('open');overlay.classList.toggle('open')};overlay.onclick=()=>{sidebar.classList.remove('open');overlay.classList.remove('open')};
-document.querySelectorAll('.nav-item').forEach(item=>item.onclick=()=>{document.querySelector('.nav-item.active').classList.remove('active');item.classList.add('active');document.getElementById('pageName').textContent=item.dataset.page;if(item.dataset.page!=='Dashboard')showToast(item.dataset.page,'Module preview selected');if(innerWidth<780)overlay.click()});
-const siteMenu=document.getElementById('siteMenu');document.getElementById('siteSwitcher').onclick=()=>siteMenu.classList.toggle('open');document.addEventListener('click',e=>{if(!e.target.closest('.site-switcher')&&!e.target.closest('.site-menu'))siteMenu.classList.remove('open')});
-const backdrop=document.getElementById('modalBackdrop');function modal(open){backdrop.classList.toggle('open',open)}document.getElementById('importBtn').onclick=()=>modal(true);document.getElementById('modalClose').onclick=()=>modal(false);document.getElementById('cancelModal').onclick=()=>modal(false);backdrop.onclick=e=>{if(e.target===backdrop)modal(false)};document.getElementById('downloadSample').onclick=()=>{modal(false);showToast('Sample ready','CSV import template downloaded')};document.getElementById('addProductBtn').onclick=()=>showToast('Product editor','New product form is ready to open');
-let toastTimer;function showToast(title,msg){const toast=document.getElementById('toast');toast.querySelector('b').textContent=title;toast.querySelector('small').textContent=msg;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)}
-document.querySelector('.dropzone input').onchange=e=>{if(e.target.files[0]){modal(false);showToast('File validated',`${e.target.files[0].name} is ready to preview`)}};
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('globalSearch').focus()}if(e.key==='Escape')modal(false)});
+const tbody = document.getElementById("productRows");
+let filter = "all";
+function renderProducts() {
+  const query = document.getElementById("productSearch").value.toLowerCase();
+  const shown = products.filter(
+    (p) =>
+      (filter === "all" || p.status === filter) &&
+      p.name.toLowerCase().includes(query),
+  );
+  tbody.innerHTML =
+    shown
+      .map(
+        (p) =>
+          `<tr><td><div class="product-cell"><span class="product-thumb"><i class="machine"></i></span><p><b>${p.name}</b><small>/${p.slug}</small></p></div></td><td><span class="category-tag">${p.cat}</span></td><td><span class="seo-score ${p.seo < 80 ? "mid" : ""}"><i></i>${p.seo}</span></td><td><span class="status ${p.status}">${p.status[0].toUpperCase() + p.status.slice(1)}</span></td><td>${p.updated}</td><td><button class="row-more">•••</button></td></tr>`,
+      )
+      .join("") ||
+    '<tr><td colspan="6" style="text-align:center;height:110px">No products found</td></tr>';
+}
+renderProducts();
+document
+  .getElementById("productSearch")
+  .addEventListener("input", renderProducts);
+document.querySelectorAll(".chip").forEach((btn) =>
+  btn.addEventListener("click", () => {
+    document.querySelector(".chip.active").classList.remove("active");
+    btn.classList.add("active");
+    filter = btn.dataset.filter;
+    renderProducts();
+  }),
+);
+const sidebar = document.getElementById("sidebar"),
+  overlay = document.getElementById("mobileOverlay");
+document.getElementById("menuBtn").onclick = () => {
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("open");
+};
+overlay.onclick = () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("open");
+};
+document.querySelectorAll(".nav-item").forEach(
+  (item) =>
+    (item.onclick = () => {
+      document.querySelector(".nav-item.active").classList.remove("active");
+      item.classList.add("active");
+      document.getElementById("pageName").textContent = item.dataset.page;
+      if (item.dataset.page !== "Dashboard")
+        showToast(item.dataset.page, "Module preview selected");
+      if (innerWidth < 780) overlay.click();
+    }),
+);
+const siteMenu = document.getElementById("siteMenu");
+document.getElementById("siteSwitcher").onclick = () =>
+  siteMenu.classList.toggle("open");
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".site-switcher") && !e.target.closest(".site-menu"))
+    siteMenu.classList.remove("open");
+});
+const backdrop = document.getElementById("modalBackdrop");
+function modal(open) {
+  backdrop.classList.toggle("open", open);
+}
+document.getElementById("importBtn").onclick = () => modal(true);
+document.getElementById("modalClose").onclick = () => modal(false);
+document.getElementById("cancelModal").onclick = () => modal(false);
+backdrop.onclick = (e) => {
+  if (e.target === backdrop) modal(false);
+};
+document.getElementById("downloadSample").onclick = () => {
+  modal(false);
+  showToast("Sample ready", "CSV import template downloaded");
+};
+document.getElementById("addProductBtn").onclick = () =>
+  showToast("Product editor", "New product form is ready to open");
+let toastTimer;
+function showToast(title, msg) {
+  const toast = document.getElementById("toast");
+  toast.querySelector("b").textContent = title;
+  toast.querySelector("small").textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+document.querySelector(".dropzone input").onchange = (e) => {
+  if (e.target.files[0]) {
+    modal(false);
+    showToast(
+      "File validated",
+      `${e.target.files[0].name} is ready to preview`,
+    );
+  }
+};
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    document.getElementById("globalSearch").focus();
+  }
+  if (e.key === "Escape") modal(false);
+});

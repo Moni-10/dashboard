@@ -1,0 +1,10 @@
+const fs = require('fs');
+const l = fs.readFileSync('src/main.jsx', 'utf8').split('\n');
+const line = l[24];
+console.log('Has banner-preview:', line.includes('banner-preview'));
+console.log('Has data.banner_image:', line.includes('data.banner_image'));
+console.log('Has setPreviewImg:', line.includes('setPreviewImg'));
+console.log('Has previewImg:', line.includes('previewImg'));
+console.log('Has Home Page:', line.includes('Home Page'));
+console.log('Has Our Company Page:', line.includes('Our Company Page'));
+console.log('Has Contact Us Page:', line.includes('Contact Us Page'));

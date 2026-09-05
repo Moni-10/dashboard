@@ -1,1 +1,28 @@
-{"name":"mohindra-mechanical-works-cms","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"vite","build":"vite build","server":"node server/index.js"},"dependencies":{"@tinymce/tinymce-react":"^6.3.0","@vitejs/plugin-react":"latest","cors":"latest","dotenv":"latest","express":"latest","lucide-react":"^1.37.0","mongoose":"latest","react":"latest","react-dom":"latest","tinymce":"^8.8.2","vite":"latest"}}
+{
+    "name": "mohindra-mechanical-works-cms",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "server": "node server/index.js"
+    },
+    "dependencies": {
+        "@tinymce/tinymce-react": "^6.3.0",
+        "@vitejs/plugin-react": "latest",
+        "bcryptjs": "^3.0.3",
+        "cors": "latest",
+        "dotenv": "latest",
+        "express": "latest",
+        "express-rate-limit": "^8.7.0",
+        "helmet": "^8.3.0",
+        "jsonwebtoken": "^9.0.3",
+        "lucide-react": "^1.37.0",
+        "mongoose": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "tinymce": "^8.8.2",
+        "vite": "latest"
+    }
+}
